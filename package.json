@@ -1,0 +1,40 @@
+{
+  "name": "gastroverse",
+  "version": "1.0.0",
+  "description": "API de recetas y favoritos para GastroVerse",
+  "main": "app.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js",
+    "build": "echo 'No build process needed'",
+    "test": "echo 'No tests specified'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DJ111980/Gastro-Verse.git"
+  },
+  "keywords": ["api", "recetas", "gastroverse", "nodejs", "postgresql"],
+  "author": "DJ111980",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DJ111980/Gastro-Verse/issues"
+  },
+  "homepage": "https://github.com/DJ111980/Gastro-Verse#readme",
+  "dependencies": {
+    "axios": "^1.9.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
