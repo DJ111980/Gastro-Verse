@@ -26,18 +26,35 @@ const PORT = process.env.PORT || 10000;
  * Desarrollo: múltiples puertos locales
  * Producción: dominio específico + render.com
  */
+// src/backend/app.js (o donde esté tu app.js principal)
+
+const allowedOrigins = [
+    // Orígenes de producción
+    process.env.FRONTEND_URL || 'https://gastroverse-frontend.onrender.com',
+    /https:\/\/.*\.onrender\.com$/,
+    // Orígenes de desarrollo (los incluimos siempre para facilitar las pruebas)
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://localhost:3001'
+];
+
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? [
-        process.env.FRONTEND_URL || 'https://gastroverse-frontend.onrender.com',
-        /https:\/\/.*\.onrender\.com$/  // Permite subdominios de render.com
-      ]
-    : ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:3001'],
+  origin: function (origin, callback) {
+    // Permitir peticiones sin 'origin' (como las de Postman o apps móviles)
+    if (!origin || allowedOrigins.some(pattern => 
+        pattern instanceof RegExp ? pattern.test(origin) : pattern === origin
+    )) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['X-Token-Expires-In', 'X-Token-Status']
 };
+
 
 // Middlewares globales
 app.use(cors(corsOptions));
