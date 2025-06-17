@@ -110,6 +110,16 @@ const IngredientesModel = {
 };
 
 /**
+   * Busca un ingrediente específico por su ID.
+   * @param {number} id - ID del ingrediente.
+   * @returns {Promise<Object|undefined>}
+   */
+  async obtenerPorId(id) {
+    const result = await database.query('SELECT * FROM ingredientes WHERE id = $1', [id]);
+    return result.rows[0];
+  },
+
+/**
  * Exportación del modelo para servicios
  * Maneja integridad referencial con recetas automáticamente
  */
