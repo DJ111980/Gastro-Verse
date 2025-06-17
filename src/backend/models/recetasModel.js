@@ -16,19 +16,20 @@ const RecetasModel = {
   /**
    * Crea una nueva receta en la base de datos
    * @param {Object} recetaData - Datos de la nueva receta
-   * @param {string} recetaData.titulo - Título de la receta
-   * @param {string} recetaData.instrucciones - Instrucciones de preparación
-   * @param {number} [recetaData.tiempo_preparacion] - Tiempo en minutos
-   * @param {string} [recetaData.dificultad] - Nivel de dificultad
+   * @param {string} recetaData.titulo
+   * @param {string} recetaData.instrucciones
+   * @param {number} recetaData.usuario_id - ID del usuario creador
+   * @param {number} [recetaData.tiempo_preparacion]
+   * @param {string} [recetaData.dificultad]
    * @returns {Promise<Object>} Receta creada con ID asignado
    */
-  async crearReceta({ titulo, instrucciones, tiempo_preparacion, dificultad }) {
+  async crearReceta({ titulo, instrucciones, tiempo_preparacion, dificultad, usuario_id }) {
     const query = `
-      INSERT INTO recetas (titulo, instrucciones, tiempo_preparacion, dificultad)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO recetas (titulo, instrucciones, tiempo_preparacion, dificultad, usuario_id)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
-    const values = [titulo, instrucciones, tiempo_preparacion, dificultad];
+    const values = [titulo, instrucciones, tiempo_preparacion, dificultad, usuario_id];
     const result = await database.query(query, values);
     return result.rows[0];
   },
