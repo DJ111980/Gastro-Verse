@@ -21,12 +21,13 @@ const IngredientesController = {
   async agregarIngrediente(req, res) {
     try {
       // Delegación directa al servicio con validación incluida
-      const ingrediente = await IngredientesService.crearIngrediente(req.body);
-      
-      // Respuesta exitosa con código HTTP apropiado
+     const usuarioId = req.user.id;
+      const ingrediente = await IngredientesService.crearIngrediente(req.body, usuarioId);
       res.status(201).json(ingrediente);
     } catch (error) {
-      // Error 400 - problemas con datos de entrada
+      if (error.message.includes('no autorizada')) {
+        return res.status(403).json({ error: error.message });
+      }
       res.status(400).json({ error: error.message });
     }
   },
@@ -58,19 +59,18 @@ const IngredientesController = {
    */
   async actualizarIngrediente(req, res) {
     try {
-      const { id } = req.params;
-      const data = req.body;
-      
-      // Intento de actualización
-      const ingrediente = await IngredientesService.actualizarIngrediente(id, data);
-      
-      // Validación de existencia del recurso
-      if (!ingrediente) {
-        return res.status(404).json({ error: 'Ingrediente no encontrado' });
-      }
+      const ingredienteId = req.params.id;
+      const usuarioId = req.user.id;
+      const ingrediente = await IngredientesService.actualizarIngrediente(ingredienteId, req.body, usuarioId);
       
       res.json(ingrediente);
     } catch (error) {
+      if (error.message.includes('no encontrado')) {
+        return res.status(404).json({ error: error.message });
+      }
+      if (error.message.includes('no autorizada')) {
+        return res.status(403).json({ error: error.message });
+      }
       res.status(500).json({ error: error.message });
     }
   },
@@ -83,19 +83,18 @@ const IngredientesController = {
    */
   async eliminarIngrediente(req, res) {
     try {
-      const { id } = req.params;
+      const ingredienteId = req.params.id;
+      const usuarioId = req.user.id;
+      await IngredientesService.eliminarIngrediente(ingredienteId, usuarioId);
       
-      // Intento de eliminación
-      const ingrediente = await IngredientesService.eliminarIngrediente(id);
-      
-      // Validación de existencia antes de eliminar
-      if (!ingrediente) {
-        return res.status(404).json({ error: 'Ingrediente no encontrado' });
-      }
-      
-      // Respuesta de confirmación sin devolver el objeto eliminado
       res.json({ mensaje: 'Ingrediente eliminado correctamente' });
     } catch (error) {
+      if (error.message.includes('no encontrado')) {
+        return res.status(404).json({ error: error.message });
+      }
+      if (error.message.includes('no autorizada')) {
+        return res.status(403).json({ error: error.message });
+      }
       res.status(500).json({ error: error.message });
     }
   }
