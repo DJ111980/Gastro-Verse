@@ -91,7 +91,7 @@ const RecetasService = {
    * @returns {Promise<Array>} Lista de recetas del usuario.
    */
   async listarRecetasPorUsuario(usuarioId) {
-    return await RecetasModel.listarRecetasPorUsuario(usuarioId);
+  return await RecetasModel.obtenerPorUsuarioId(usuarioId);
   }
 };
 
