@@ -19,7 +19,7 @@ const RecetasService = {
    * @param {number} usuarioId - ID del usuario que crea la receta.
    * @returns {Promise<Object>} Receta creada.
    */
-  async crearReceta(data) {
+  async crearReceta(data, usuarioId) {
   // Añadimos el usuarioId a los datos que se pasarán al modelo.
     const recetaData = { ...data, usuario_id: usuarioId };
     return await RecetasModel.crearReceta(recetaData);
