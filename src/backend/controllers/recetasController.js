@@ -98,6 +98,25 @@ const RecetasController = {
   },
 
   /**
+   * Obtener las recetas creadas por el usuario autenticado.
+   * @param {Object} req - Request de Express
+   * @param {Object} res - Response de Express
+   * @returns {Promise<void>} Un array con las recetas del usuario.
+   */
+  async obtenerMisRecetas(req, res) {
+    try {
+      const usuarioId = req.user.id;
+      const recetas = await RecetasService.listarRecetasPorUsuario(usuarioId);
+      res.json({
+        total: recetas.length,
+        recetas: recetas,
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Error al obtener tus recetas' });
+    }
+  },
+
+  /**
    * Eliminar receta por ID
    * @async
    * @param {Object} req - Request con ID en parámetros
