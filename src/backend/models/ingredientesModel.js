@@ -106,9 +106,8 @@ const IngredientesModel = {
       [id]
     );
     return result.rows[0];
-  } 
-};
-
+  },
+  
 /**
    * Busca un ingrediente específico por su ID.
    * @param {number} id - ID del ingrediente.
@@ -117,7 +116,9 @@ const IngredientesModel = {
   async obtenerPorId(id) {
     const result = await database.query('SELECT * FROM ingredientes WHERE id = $1', [id]);
     return result.rows[0];
-  },
+  }
+  
+};
 
 /**
  * Exportación del modelo para servicios
