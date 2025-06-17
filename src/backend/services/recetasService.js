@@ -83,6 +83,15 @@ const RecetasService = {
     }
 
     return await RecetasModel.eliminarReceta(recetaId);
+  },
+  
+  /**
+   * Lista todas las recetas pertenecientes a un usuario específico.
+   * @param {number} usuarioId - El ID del usuario.
+   * @returns {Promise<Array>} Lista de recetas del usuario.
+   */
+  async listarRecetasPorUsuario(usuarioId) {
+    return await RecetasModel.listarRecetasPorUsuario(usuarioId);
   }
 };
 
