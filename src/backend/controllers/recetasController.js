@@ -23,10 +23,11 @@ const RecetasController = {
   async crearReceta(req, res) {
     try {
       // Delegación al servicio para lógica de negocio
-      const receta = await RecetasService.crearReceta(req.body);
-      res.status(201).json(receta);
+      const usuarioId = req.user.id; 
+      const receta = await RecetasService.crearReceta(req.body, usuarioId);
+      // Devolvemos el objeto completo con el nuevo usuario_id
+      res.status(201).json({ mensaje: "Receta creada exitosamente", receta });
     } catch (error) {
-      // Manejo de errores de validación o BD
       res.status(400).json({ error: error.message });
     }
   },
@@ -77,16 +78,21 @@ const RecetasController = {
    */
   async actualizarReceta(req, res) {
     try {
-      const { id } = req.params;
-      const receta = await RecetasService.actualizarReceta(id, req.body);
+      const recetaId = req.params.id;
+      const usuarioId = req.user.id;
+      const receta = await RecetasService.actualizarReceta(recetaId, req.body, usuarioId);
       
-      // Verificación de existencia para UPDATE
-      if (!receta) {
-        return res.status(404).json({ error: 'Receta no encontrada' });
-      }
-      
-      res.json(receta);
+      // La lógica de 404 y 403 (no autorizado) ya está en el servicio.
+      // Aquí solo manejamos el error genérico.
+      res.json({ mensaje: "Receta actualizada exitosamente", receta });
     } catch (error) {
+      // Devolvemos un código de estado apropiado según el error.
+      if (error.message.includes('no encontrada')) {
+        return res.status(404).json({ error: error.message });
+      }
+      if (error.message.includes('no autorizada')) {
+        return res.status(403).json({ error: error.message }); // 403 Forbidden
+      }
       res.status(500).json({ error: error.message });
     }
   },
@@ -100,16 +106,18 @@ const RecetasController = {
    */
   async eliminarReceta(req, res) {
     try {
-      const { id } = req.params;
-      const receta = await RecetasService.eliminarReceta(id);
-      
-      // Validación antes de confirmar eliminación
-      if (!receta) {
-        return res.status(404).json({ error: 'Receta no encontrada' });
-      }
+       const recetaId = req.params.id;
+      const usuarioId = req.user.id;
+      await RecetasService.eliminarReceta(recetaId, usuarioId);
       
       res.json({ mensaje: 'Receta eliminada correctamente' });
     } catch (error) {
+       if (error.message.includes('no encontrada')) {
+        return res.status(404).json({ error: error.message });
+      }
+      if (error.message.includes('no autorizada')) {
+        return res.status(403).json({ error: error.message });
+      }
       res.status(500).json({ error: error.message });
     }
   }
