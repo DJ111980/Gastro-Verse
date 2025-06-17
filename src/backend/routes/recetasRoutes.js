@@ -23,6 +23,11 @@ const manejoErroresValidacion = require('../middlewares/manejoErroresValidacion'
 router.get('/', RecetasController.obtenerTodas);
 
 /**
+ * GET /api/v1/recetas/mis-recetas
+ */
+router.get('/misRecetas', verificarToken, RecetasController.obtenerMisRecetas);
+
+/**
  * GET /api/v1/recetas/:id
  * Obtener receta específica por ID
  */
