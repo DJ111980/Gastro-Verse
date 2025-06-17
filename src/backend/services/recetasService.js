@@ -15,11 +15,14 @@ const RecetasModel = require('../models/recetasModel');
 const RecetasService = {
   /**
    * Crear nueva receta en el sistema
-   * @param {Object} data - Datos de la receta (titulo, instrucciones, tiempo_preparacion, dificultad)
-   * @returns {Promise<Object>} Receta creada con ID generado
+   * @param {Object} data - Datos de la receta.
+   * @param {number} usuarioId - ID del usuario que crea la receta.
+   * @returns {Promise<Object>} Receta creada.
    */
   async crearReceta(data) {
-    return await RecetasModel.crearReceta(data);
+  // Añadimos el usuarioId a los datos que se pasarán al modelo.
+    const recetaData = { ...data, usuario_id: usuarioId };
+    return await RecetasModel.crearReceta(recetaData);
   },
 
   /**
@@ -40,22 +43,46 @@ const RecetasService = {
   },
 
   /**
-   * Actualizar receta existente
-   * @param {number} id - ID de la receta
-   * @param {Object} data - Nuevos datos de la receta
-   * @returns {Promise<Object>} Receta actualizada
+   * Actualizar receta existente, verificando la propiedad primero.
+   * @param {number} recetaId - ID de la receta.
+   * @param {Object} data - Nuevos datos.
+   * @param {number} usuarioId - ID del usuario que intenta la acción.
+   * @returns {Promise<Object>} Receta actualizada.
+   * @throws {Error} Si la receta no existe o el usuario no es el propietario.
    */
-  async actualizarReceta(id, data) {
-    return await RecetasModel.actualizarReceta(id, data);
+  async actualizarReceta(recetaId, data, usuarioId) {
+    const recetaExistente = await RecetasModel.obtenerPorId(recetaId);
+
+    if (!recetaExistente) {
+      throw new Error('Receta no encontrada');
+    }
+
+    if (recetaExistente.usuario_id !== usuarioId) {
+      throw new Error('Acción no autorizada. No eres el propietario de esta receta.');
+    }
+
+    return await RecetasModel.actualizarReceta(recetaId, data);
   },
 
   /**
-   * Eliminar receta del sistema
-   * @param {number} id - ID de la receta a eliminar
-   * @returns {Promise<Object>} Resultado de la eliminación
+   * Eliminar receta, verificando la propiedad primero.
+   * @param {number} recetaId - ID de la receta a eliminar.
+   * @param {number} usuarioId - ID del usuario que intenta la acción.
+   * @returns {Promise<Object>} Resultado de la eliminación.
+   * @throws {Error} Si la receta no existe o el usuario no es el propietario.
    */
-  async eliminarReceta(id) {
-    return await RecetasModel.eliminarReceta(id);
+ async eliminarReceta(recetaId, usuarioId) {
+    const recetaExistente = await RecetasModel.obtenerPorId(recetaId);
+
+    if (!recetaExistente) {
+      throw new Error('Receta no encontrada');
+    }
+
+    if (recetaExistente.usuario_id !== usuarioId) {
+      throw new Error('Acción no autorizada. No eres el propietario de esta receta.');
+    }
+
+    return await RecetasModel.eliminarReceta(recetaId);
   }
 };
 
