@@ -76,6 +76,17 @@ const RecetasModel = {
   },
 
   /**
+   * Obtiene todas las recetas creadas por un usuario específico.
+   * @param {number} usuarioId - El ID del usuario.
+   * @returns {Promise<Array>} Un array con las recetas del usuario.
+   */
+  async obtenerPorUsuarioId(usuarioId) {
+    const query = 'SELECT * FROM recetas WHERE usuario_id = $1 ORDER BY fecha_creacion DESC';
+    const result = await database.query(query, [usuarioId]);
+    return result.rows;
+  },
+
+  /**
    * Elimina una receta y sus datos relacionados
    * Usa transacción para garantizar integridad referencial
    * Elimina en cascada: ingredientes → favoritos → receta
