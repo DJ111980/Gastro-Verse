@@ -15,6 +15,13 @@ CREATE TABLE recetas (
     tiempo_preparacion INT, -- en minutos
     dificultad VARCHAR(50),
     fecha_creacion TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+
+    usuario_id INT,
+
+    CONSTRAINT fk_recetas_usuarios
+        FOREIGN KEY(usuario_id) 
+        REFERENCES usuarios(id)
+        ON DELETE SET NULL 
 );
 
 -- Tabla de ingredientes
